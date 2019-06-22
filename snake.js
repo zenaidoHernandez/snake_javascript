@@ -8,27 +8,45 @@ const head = {
     y: 0
 };
 
+const body = [];
+
 let food = null;
 
 let dx = 0;
 let dy = 0;
 
-setInterval(main, 1000);
+setInterval(main, 200);
 
 function main(){
     update();
     draw();
 }
 function update(){
+    increaseSnake(true);
+
     head.x += dx;
     head.y += dy;
 
-    if(food && head.x === food.x && head.y === food.y){
-        food = null;
-    }
-
     if(!food){
         food = {x: getRandomX(), y: getRandomY()}
+    }
+
+    if(head.x === food.x && head.y === food.y){
+        food = {x: getRandomX(), y: getRandomY()}
+    }
+    else{
+        increaseSnake(false);
+    }
+}
+
+function increaseSnake(increase){
+    if(increase){
+        console.log('debe crecer');
+        body.push({x: head.x, y: head.y});
+    }
+    else{
+        console.log('no debe crecer');
+        body.shift();
     }
 }
 
@@ -45,6 +63,7 @@ function draw(){
     context.fillRect(0, 0, myCanvas.width, myCanvas.height);
     drawObject(head, 'lime');
     drawObject(food, 'white');
+    body.forEach(element => drawObject(element, 'lime'));
 };
 
 function drawObject(obj, color){
