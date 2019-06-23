@@ -8,7 +8,7 @@ const head = {
     y: 0
 };
 
-const body = [];
+let body = [];
 
 let food = null;
 
@@ -22,8 +22,8 @@ function main(){
     draw();
 }
 function update(){
+    checkCollision();
     increaseSnake(true);
-
     head.x += dx;
     head.y += dy;
 
@@ -41,13 +41,36 @@ function update(){
 
 function increaseSnake(increase){
     if(increase){
-        console.log('debe crecer');
         body.push({x: head.x, y: head.y});
     }
     else{
-        console.log('no debe crecer');
         body.shift();
     }
+}
+
+function checkCollision(){
+    let bodyLength = body.length;
+    let top = head.y < 0;
+    let bottom = head.y > 460;
+    let left = head.x < 0;
+    let right = head.x > 400;
+    for(let i = 0; i < bodyLength; i++){
+        if(JSON.stringify(body[i]) == JSON.stringify(head)){
+            gameOver();
+           continue;
+        }
+    };
+    if(top || bottom || left || right){
+        gameOver();
+    }
+}
+
+function gameOver(){
+    head.x = 0;
+    head.y = 0;
+    dx = 0;
+    dy = 0;
+    body = [];
 }
 
 function getRandomX(){
@@ -76,24 +99,28 @@ document.addEventListener('keydown', moveSnake);
 function moveSnake(event){
     switch(event.key){
         case 'ArrowUp':
-            console.log('arriba');
-            dx = 0;
-            dy = -SIZE;
+            if(dy == 0){
+                dx = 0;
+                dy = -SIZE;
+            }
         break;
         case 'ArrowDown':
-            console.log('abajo');
-            dx = 0;
-            dy = SIZE;
+            if(dy == 0){
+                dx = 0;
+                dy = SIZE;
+            }
         break;
         case 'ArrowRight':
-            console.log('Derecha');
-            dx = SIZE;
-            dy = 0;
+            if(dx == 0){
+                dx = SIZE;
+                dy = 0;
+            }
         break;
         case 'ArrowLeft':
-            console.log('Izquierda');
-            dx = -SIZE;
-            dy = 0;
+            if(dx == 0){
+                dx = -SIZE;
+                dy = 0;
+            }
         break;
         
     }
