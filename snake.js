@@ -14,8 +14,9 @@ let food = null;
 
 let dx = 0;
 let dy = 0;
+let lastMoveAxis;
 
-setInterval(main, 200);
+setInterval(main, 100);
 
 function main(){
     update();
@@ -27,18 +28,45 @@ function update(){
     head.x += dx;
     head.y += dy;
 
+    if(dx != 0){
+        lastMoveAxis = 'X';
+    }else if (dy != 0){
+        lastMoveAxis = 'Y';
+    }
+
     if(!food){
-        food = {x: getRandomX(), y: getRandomY()}
+        food = randomFoodPosition();
     }
 
     if(head.x === food.x && head.y === food.y){
-        food = {x: getRandomX(), y: getRandomY()}
+        food = randomFoodPosition();
     }
     else{
         increaseSnake(false);
     }
 }
 
+function randomFoodPosition(){
+    let positionFood;
+    do{
+        positionFood = {x: getRandomX(), y: getRandomY()}
+    }while(checkFoodCollision(positionFood));
+
+    return positionFood;
+}
+
+function checkFoodCollision(positionFood){
+    let bodyLength = body.length;
+    for(let i = 0; i > bodyLength; i++){
+        if(JSON.stringify(body[i]) == JSON.stringify(positionFood));
+            return true;
+    }
+
+    if(JSON.stringify(head) == JSON.stringify(positionFood))
+        return true;
+    
+    return false;
+}
 function increaseSnake(increase){
     if(increase){
         body.push({x: head.x, y: head.y});
@@ -51,9 +79,9 @@ function increaseSnake(increase){
 function checkCollision(){
     let bodyLength = body.length;
     let top = head.y < 0;
-    let bottom = head.y > 460;
+    let bottom = head.y >= 460;
     let left = head.x < 0;
-    let right = head.x > 400;
+    let right = head.x >= 400;
     for(let i = 0; i < bodyLength; i++){
         if(JSON.stringify(body[i]) == JSON.stringify(head)){
             gameOver();
@@ -99,25 +127,25 @@ document.addEventListener('keydown', moveSnake);
 function moveSnake(event){
     switch(event.key){
         case 'ArrowUp':
-            if(dy == 0){
+            if(lastMoveAxis != 'Y'){
                 dx = 0;
                 dy = -SIZE;
             }
         break;
         case 'ArrowDown':
-            if(dy == 0){
+            if(lastMoveAxis != 'Y'){
                 dx = 0;
                 dy = SIZE;
             }
         break;
         case 'ArrowRight':
-            if(dx == 0){
+            if(lastMoveAxis != 'X'){
                 dx = SIZE;
                 dy = 0;
             }
         break;
         case 'ArrowLeft':
-            if(dx == 0){
+            if(lastMoveAxis != 'X'){
                 dx = -SIZE;
                 dy = 0;
             }
