@@ -10,12 +10,14 @@ const head = {
 
 let body = [];
 
-let food = null;
+let food = randomFoodPosition();
 
 let dx = 0;
 let dy = 0;
 let lastMoveAxis;
 
+let score = 0;
+let displayScore = document.getElementById('score');
 setInterval(main, 100);
 
 function main(){
@@ -34,11 +36,9 @@ function update(){
         lastMoveAxis = 'Y';
     }
 
-    if(!food){
-        food = randomFoodPosition();
-    }
-
     if(head.x === food.x && head.y === food.y){
+        score++;
+        displayScore.innerHTML = score;
         food = randomFoodPosition();
     }
     else{
@@ -99,6 +99,8 @@ function gameOver(){
     dx = 0;
     dy = 0;
     body = [];
+    score = 0;
+    displayScore.innerHTML = 0;
 }
 
 function getRandomX(){
